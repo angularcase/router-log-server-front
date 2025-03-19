@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { BackendService, LiveData, MacAddress } from './services/backend.service';
+import { BackendService, LiveData, Person } from './services/backend.service';
 
 @Component({
   selector: 'app-root',
@@ -21,13 +21,9 @@ export class AppComponent implements OnInit {
       this.liveData = liveData;
     });
   }
-
-  getPeople() {
-    return Object.values(MacAddress);
-  }
-
-  getPersonByValue(addr: keyof MacAddress) {
-    return MacAddress[addr];
+  
+  getPeople(): Person[] {
+    return this.liveData ? Object.keys(this.liveData) as Person[] : [];
   }
 
 }

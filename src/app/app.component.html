@@ -1,6 +1,20 @@
-<div class="container">
+<div class="container mt-5">
+  <h2 class="mb-5">Office Presence</h2>
   @for (person of getPeople(); track $index) {
-    <div>{{ MacAddress[person] }}</div>
-    <div>{{ liveData[person] }}</div>
+    <div class="row">
+      <div class="col">
+        <div>{{ person }}</div>
+      </div>
+      <div class="col">
+        <div>
+          @if (liveData[person] == 'in') {
+            <span class="bi bi-emoji-smile"></span>
+          } @else {
+            <span class="bi bi-emoji-frown-fill"></span>
+          }
+          
+        </div>
+      </div>
+    </div>
   }
 </div>
