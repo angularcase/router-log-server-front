@@ -1,39 +1,26 @@
-# Etap 1: Budowanie aplikacji
-FROM node:18 AS builder
-
-# Ustawienie katalogu roboczego
+# Etap budowania Angulara
+FROM node:18-alpine as build
 WORKDIR /app
 
-# Kopiowanie plików package.json oraz package-lock.json (jeśli istnieje)
+# Kopiowanie plików konfiguracyjnych i instalacja zależności
 COPY package*.json ./
-
-# Instalacja zależności
 RUN npm install
 
-# Kopiowanie pozostałych plików projektu
+# Kopiowanie reszty plików projektu
 COPY . .
 
-# Budowanie aplikacji (domyślnie buduje do katalogu dist)
-RUN npm run build
+# Budowanie projektu Angular z przekazaniem flagi --prod
+RUN npm run build -- --configuration production
 
-# Etap 2: Obraz produkcyjny
-FROM node:18-alpine
+# Etap produkcyjny - serwowanie plików za pomocą Nginx
+FROM nginx:alpine
+# Upewnij się, że ścieżka /app/dist/<nazwa_projektu> odpowiada Twojemu folderowi wynikowemu
+COPY --from=build /app/dist/my-app/browser /usr/share/nginx/html
 
-# Ustawienie katalogu roboczego
-WORKDIR /app
+# Wystawienie portu 3536
+EXPOSE 3536
 
-# Kopiowanie plików package.json i package-lock.json
-COPY package*.json ./
+# Zmiana domyślnej konfiguracji Nginx, aby nasłuchiwał na porcie 3536
+RUN sed -i 's/listen       80;/listen       3536;/g' /etc/nginx/conf.d/default.conf
 
-# Instalacja tylko zależności produkcyjnych
-RUN npm install --production
-
-# Kopiowanie zbudowanej aplikacji z etapu buildera
-COPY --from=builder /app/dist ./dist
-
-# Eksponowanie portów
-EXPOSE 3535         # Port TCP dla NestJS
-EXPOSE 1514/udp     # Port UDP
-
-# Komenda startowa
-CMD ["node", "dist/main"]
+CMD ["nginx", "-g", "daemon off;"]
