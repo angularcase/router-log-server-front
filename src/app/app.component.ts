@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BackendService, LiveData, Person } from './services/backend.service';
-import { NgClass } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [NgClass],
+  imports: [NgClass, DatePipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

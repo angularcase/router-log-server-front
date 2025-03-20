@@ -21,5 +21,8 @@ export class BackendService {
 export type Person = 'Z' | 'D' | 'T' | 'P' | 'G';
 
 export type LiveData = {
-  [key in Person]: 'in' | 'out';
+  [key in Person]: {
+    state: 'in' | 'out',
+    date: string
+  }
 };

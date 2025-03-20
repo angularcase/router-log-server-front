@@ -1,3 +1,3 @@
 export const environment = {
-    apiUrl: 'https://tiskel.com:3535'
+    apiUrl: 'http://57.128.223.231:3535'
 };
