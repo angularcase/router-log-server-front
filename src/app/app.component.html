@@ -1,21 +1,23 @@
 <div class="container mt-5">
   <h2 class="mb-5">Office presence</h2>
 
-  <ol class="list-group">
+  <ul class="list-group">
+
     @for (person of getPeople(); track $index) {
-      <li class="list-group-item d-flex justify-content-between align-items-start">
-        <div class="ms-2 me-auto">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="me-auto">
           <div class="fw-bold">{{ person }}</div>
         </div>
+
         <span class="badge rounded-pill" [ngClass]="liveData[person].state === 'in' ? 'text-bg-success' : 'text-bg-danger'">
-          <span class="me-2">{{ liveData[person].state }}</span>
+          <span>{{ liveData[person].state }}</span>
           @if (liveData[person].date !== '') {
-            <span>{{ liveData[person].date | date: 'HH:mm' }}</span>
+            <span class="ms-2">{{ liveData[person].date | date: 'HH:mm' }}</span>
           }
         </span>
       </li>
     }
-  </ol>
+  </ul>
 
 
 </div>
