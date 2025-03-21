@@ -1,6 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { map, Observable } from 'rxjs';
+
+export interface Device {
+  mac: string;
+  localIp: string;
+  hostname: string;
+  publicIp: string;
+  isOnline: boolean;
+}
+
+export type DeviceDataDto = [
+  mac: string,
+  localIp: string,
+  hostname: string,
+  publicIp: string,
+  isOnline: boolean
+];
+
+export type ConnectedDevicesDto = Record<string, DeviceDataDto>;
 
 @Injectable({
   providedIn: 'root'
@@ -13,16 +32,20 @@ export class BackendService {
     private httpClient: HttpClient
   ) { }
 
-  getLiveData() {
-    return this.httpClient.get<LiveData>(`${this.apiUrl}/live-data`);
-  }
+  getConnectedDevices(): Observable<Device[]> {
+    const url = `${this.apiUrl}/get-connected-devices-raw`;
+    return this.httpClient.get<ConnectedDevicesDto>(url).pipe(
+      map((rawDevices) =>
+        Object.values(rawDevices).map(
+          ([mac, localIp, hostname, publicIp, isOnline]) => ({
+            mac,
+            localIp,
+            hostname,
+            publicIp,
+            isOnline,
+          })
+        )
+      )
+    );
+  }  
 }
-
-export type Person = 'Z' | 'D' | 'T' | 'P' | 'G';
-
-export type LiveData = {
-  [key in Person]: {
-    state: 'in' | 'out',
-    date: string
-  }
-};
