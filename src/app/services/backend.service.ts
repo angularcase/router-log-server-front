@@ -5,21 +5,9 @@ import { map, Observable } from 'rxjs';
 
 export interface Device {
   mac: string;
-  localIp: string;
-  hostname: string;
-  publicIp: string;
-  isOnline: boolean;
+  state: boolean;
+  date: string;
 }
-
-export type DeviceDataDto = [
-  mac: string,
-  localIp: string,
-  hostname: string,
-  publicIp: string,
-  isOnline: boolean
-];
-
-export type ConnectedDevicesDto = Record<string, DeviceDataDto>;
 
 @Injectable({
   providedIn: 'root'
@@ -33,19 +21,7 @@ export class BackendService {
   ) { }
 
   getConnectedDevices(): Observable<Device[]> {
-    const url = `${this.apiUrl}/router/get-connected-devices`;
-    return this.httpClient.get<ConnectedDevicesDto>(url).pipe(
-      map((rawDevices) =>
-        Object.values(rawDevices).map(
-          ([mac, localIp, hostname, publicIp, isOnline]) => ({
-            mac,
-            localIp,
-            hostname,
-            publicIp,
-            isOnline,
-          })
-        )
-      )
-    );
+    const url = `${this.apiUrl}/get-connected-devices`;
+    return this.httpClient.get<Device[]>(url);
   }  
 }
