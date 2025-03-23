@@ -23,8 +23,18 @@ export class WebsocketService {
     });
   }
 
+  onNumberOfClientsMessage(): Observable<any> {
+    return new Observable((observer) => {
+      this.socket.on(MessageId.NumberOfClients, (data) => {
+        console.log(MessageId.ConnectedDevices, data);
+        observer.next(data);
+      });
+    });
+  }
+
 }
 
 export enum MessageId {
-  ConnectedDevices = 'connected-devices'
+  ConnectedDevices = 'connected-devices',
+  NumberOfClients = 'number-of-clients'
 }

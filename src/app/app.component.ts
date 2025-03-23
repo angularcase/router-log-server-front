@@ -16,22 +16,29 @@ import { Subscription } from "rxjs";
 export class AppComponent implements OnInit, OnDestroy {
   public loaded = true;
 
+  numberOfClients = 0;
+
   devices: Device[] = [];
 
-  subs: Subscription | undefined;
+  onConnectedDeviceSub: Subscription | undefined;
+  onNumberOfClientsSub: Subscription | undefined;
 
   constructor(
-    private backendService: BackendService,
     private websocketService: WebsocketService
   ) {}
 
   ngOnDestroy(): void {
-    this.subs?.unsubscribe();
+    this.onConnectedDeviceSub?.unsubscribe();
+    this.onNumberOfClientsSub?.unsubscribe();
   }
 
   ngOnInit(): void {
-    this.subs = this.websocketService.onConnectedDevicesMessage().subscribe((devices) => {
+    this.onConnectedDeviceSub = this.websocketService.onConnectedDevicesMessage().subscribe((devices) => {
       this.devices = devices;
+    });
+
+    this.onNumberOfClientsSub = this.websocketService.onNumberOfClientsMessage().subscribe((number) => {
+      this.numberOfClients = number;
     });
   }
 }
