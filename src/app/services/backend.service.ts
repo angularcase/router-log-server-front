@@ -33,7 +33,7 @@ export class BackendService {
   ) { }
 
   getConnectedDevices(): Observable<Device[]> {
-    const url = `${this.apiUrl}/get-connected-devices-raw`;
+    const url = `${this.apiUrl}/router/get-connected-devices`;
     return this.httpClient.get<ConnectedDevicesDto>(url).pipe(
       map((rawDevices) =>
         Object.values(rawDevices).map(
