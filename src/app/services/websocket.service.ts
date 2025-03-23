@@ -10,7 +10,9 @@ export class WebsocketService {
 
   private apiUrl = environment.apiUrl;
 
-  private socket = io(this.apiUrl);
+  private socket = io(this.apiUrl, {
+    transports: ['websocket']
+  });
 
   constructor() { }
 
