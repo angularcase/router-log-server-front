@@ -38,7 +38,14 @@ export class TestGraphComponent implements OnInit {
       ],
       chart: {
         height: 350,
-        type: "rangeBar"
+        type: "rangeBar",
+        toolbar: {
+          show: false // 👈 ukrywa pasek narzędzi (zoom, reset itd.)
+        },
+        zoom: {
+          enabled: false // 👈 blokuje zoom przez zaznaczenie
+        }
+      
       },
       plotOptions: {
         bar: {
