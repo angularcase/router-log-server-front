@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export interface Device {
   mac: string;
   state: boolean;
-  date: string;
+  date: Date;
 }
 
 @Injectable({
@@ -25,8 +25,24 @@ export class BackendService {
     return this.httpClient.get<Device[]>(url);
   }
 
-  getArchive(): Observable<Device[]> {
+  getArchive(dto?: GetArchiveDto): Observable<Device[]> {
     const url = `${this.apiUrl}/get-archive`;
-    return this.httpClient.get<Device[]>(url);
+    let params = new HttpParams();
+  
+    if (dto?.from) {
+      params = params.set('from', dto.from.toISOString());
+    }
+  
+    if (dto?.to) {
+      params = params.set('to', dto.to.toISOString());
+    }
+  
+    return this.httpClient.get<Device[]>(url, { params });
   }
+  
+}
+
+export interface GetArchiveDto {
+  from?: Date;
+  to?: Date;
 }

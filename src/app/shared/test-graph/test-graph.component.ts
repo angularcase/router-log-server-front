@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BackendService, Device } from '../../services/backend.service';
+import { BackendService, Device, GetArchiveDto } from '../../services/backend.service';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -18,6 +18,9 @@ import { MacOwners } from '../../pipes/device-name.pipe';
 })
 export class TestGraphComponent implements OnInit {
 
+  from: Date = new Date((new Date()).setHours(8, 0, 0, 0));
+  to: Date = new Date((new Date()).setHours(22, 0, 0, 0));
+
   public chartOptions: {
     series: ApexAxisChartSeries;
     chart: ApexChart;
@@ -26,10 +29,6 @@ export class TestGraphComponent implements OnInit {
   };
 
   constructor(private backendService: BackendService) {
-    const today = new Date();
-    const startTime = new Date(today.setHours(8, 0, 0, 0));
-    const endTime = new Date(today.setHours(20, 0, 0, 0));
-
     this.chartOptions = {
       series: [
         {
@@ -50,9 +49,10 @@ export class TestGraphComponent implements OnInit {
       },
       xaxis: {
         type: "datetime",
-        min: startTime.getTime(),
-        max: endTime.getTime(),
+        min: this.from.getTime(),
+        max: this.to.getTime(),
         labels: {
+          datetimeUTC: false,
           format: 'HH:mm'
         }
       }
@@ -64,14 +64,22 @@ export class TestGraphComponent implements OnInit {
   }
 
   private loadChartData(): void {
-    this.backendService.getArchive().subscribe((devices: Device[]) => {
+    const getArchiveDto: GetArchiveDto = {
+      from: this.from,
+      to: this.to,
+    }
+
+    this.backendService.getArchive(getArchiveDto).subscribe((devices: Device[]) => {
       const whiteMacs = Object.keys(MacOwners);
       const chartSeries: any[] = [];
     
       for (let whiteMac of whiteMacs) {
-        const macName = (MacOwners as any)[whiteMac];
-        const macDevices = devices
-          .filter(device => device.mac === whiteMac)
+        let macDevices = devices
+          .filter(device => device.mac === whiteMac);
+
+        console.log(macDevices);
+
+        macDevices = macDevices
           .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     
         const whiteMacSeries: any[] = [];
@@ -80,31 +88,30 @@ export class TestGraphComponent implements OnInit {
     
         for (let record of macDevices) {
           const currentDate = new Date(record.date);
-    
+        
           if (record.state) {
-            // start aktywności
+            // Początek aktywności tylko jeśli nie ma aktualnie otwartego przedziału
             if (!currentStart) {
               currentStart = currentDate;
             }
           } else {
-            // koniec aktywności
+            // Koniec aktywności tylko jeśli mamy rozpoczęty przedział
             if (currentStart) {
               whiteMacSeries.push({
                 x: (MacOwners as any)[whiteMac],
-                y: [currentStart.getTime(), currentDate.getTime()],
-                // fillColor: "#008FFB", // możesz dać różne kolory np. na podstawie właściciela
+                y: [currentStart.getTime(), currentDate.getTime()]
               });
               currentStart = null;
             }
           }
         }
+        
     
         // Jeśli ostatni status był `true` i nie było końca
-        if (currentStart) {
+        if (currentStart && macDevices[macDevices.length - 1].state) {
           whiteMacSeries.push({
             x: (MacOwners as any)[whiteMac],
-            y: [currentStart.getTime(), new Date().getTime()], // do teraz
-            // fillColor: "#008FFB",
+            y: [currentStart.getTime(), new Date().getTime()]
           });
         }
     
@@ -112,8 +119,6 @@ export class TestGraphComponent implements OnInit {
       }
   
       this.updateChart(chartSeries);
-
-      console.log(chartSeries); // gotowe dane do wykresu
     });
   
   }

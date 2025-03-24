@@ -34,12 +34,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.onConnectedDeviceSub = this.websocketService.onConnectedDevicesMessage().subscribe((devices) => {
-    //   this.devices = devices;
-    // });
+    this.onConnectedDeviceSub = this.websocketService.onConnectedDevicesMessage().subscribe((devices) => {
+      this.devices = devices;
+    });
 
-    // this.onNumberOfClientsSub = this.websocketService.onNumberOfClientsMessage().subscribe((number) => {
-    //   this.numberOfClients = number;
-    // });
+    this.onNumberOfClientsSub = this.websocketService.onNumberOfClientsMessage().subscribe((number) => {
+      this.numberOfClients = number;
+    });
   }
 }
