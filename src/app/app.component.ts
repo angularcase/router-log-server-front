@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild, viewChild } from "@angular/core";
 import { BackendService, Device } from "./services/backend.service";
 import { DatePipe, NgClass } from "@angular/common";
 import { DeviceNamePipe } from "./pipes/device-name.pipe";
@@ -15,7 +15,10 @@ import { TestGraphComponent } from "./shared/test-graph/test-graph.component";
   standalone: true
 })
 export class AppComponent implements OnInit, OnDestroy {
+
   public loaded = true;
+
+  @ViewChild(TestGraphComponent) testGraph!: TestGraphComponent;
 
   numberOfClients = 0;
 
@@ -31,6 +34,18 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.onConnectedDeviceSub?.unsubscribe();
     this.onNumberOfClientsSub?.unsubscribe();
+  }
+
+  public getDayFactor() {
+    this.testGraph?.getDayFactor();
+  }
+
+  public plusFactor() {
+    this.testGraph?.plusFactor();
+  }
+
+  public minusFactor() {
+    this.testGraph?.minusFactor();
   }
 
   ngOnInit(): void {

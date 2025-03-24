@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { BackendService, Device, GetArchiveDto } from '../../services/backend.service';
 import {
   ApexAxisChartSeries,
@@ -17,6 +17,8 @@ import { MacOwners } from '../../pipes/device-name.pipe';
   standalone: true
 })
 export class TestGraphComponent implements OnInit {
+
+  public dayFactor = 0;
 
   from: Date = new Date((new Date()).setHours(8, 0, 0, 0));
   to: Date = new Date((new Date()).setHours(18, 0, 0, 0));
@@ -40,10 +42,10 @@ export class TestGraphComponent implements OnInit {
         height: 350,
         type: "rangeBar",
         toolbar: {
-          show: false // 👈 ukrywa pasek narzędzi (zoom, reset itd.)
+          show: false
         },
         zoom: {
-          enabled: false // 👈 blokuje zoom przez zaznaczenie
+          enabled: false
         }
       
       },
@@ -70,7 +72,7 @@ export class TestGraphComponent implements OnInit {
     this.loadChartData();
   }
 
-  private loadChartData(): void {
+  private loadChartData(dayFactor: number = 0): void {
     const getArchiveDto: GetArchiveDto = {
       from: this.from,
       to: this.to,
@@ -138,5 +140,19 @@ export class TestGraphComponent implements OnInit {
         data: seriesData
       }]
     };
+  }
+
+  public getDayFactor() {
+    return this.dayFactor;
+  }
+
+  public plusFactor() {
+    this.dayFactor++;
+    console.log(this.dayFactor);
+  }
+
+  public minusFactor() {
+    this.dayFactor--;
+    console.log(this.dayFactor);
   }
 }
