@@ -92,7 +92,7 @@ export class TestGraphComponent implements OnInit {
               whiteMacSeries.push({
                 x: (MacOwners as any)[whiteMac],
                 y: [currentStart.getTime(), currentDate.getTime()],
-                fillColor: "#008FFB", // możesz dać różne kolory np. na podstawie właściciela
+                // fillColor: "#008FFB", // możesz dać różne kolory np. na podstawie właściciela
               });
               currentStart = null;
             }
@@ -104,7 +104,7 @@ export class TestGraphComponent implements OnInit {
           whiteMacSeries.push({
             x: (MacOwners as any)[whiteMac],
             y: [currentStart.getTime(), new Date().getTime()], // do teraz
-            fillColor: "#008FFB",
+            // fillColor: "#008FFB",
           });
         }
     
