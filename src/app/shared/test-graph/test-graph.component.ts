@@ -19,7 +19,7 @@ import { MacOwners } from '../../pipes/device-name.pipe';
 export class TestGraphComponent implements OnInit {
 
   from: Date = new Date((new Date()).setHours(8, 0, 0, 0));
-  to: Date = new Date((new Date()).setHours(22, 0, 0, 0));
+  to: Date = new Date((new Date()).setHours(18, 0, 0, 0));
 
   public chartOptions: {
     series: ApexAxisChartSeries;
