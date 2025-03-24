@@ -4,13 +4,14 @@ import { DatePipe, NgClass } from "@angular/common";
 import { DeviceNamePipe } from "./pipes/device-name.pipe";
 import { WebsocketService } from "./services/websocket.service";
 import { Subscription } from "rxjs";
+import { TestGraphComponent } from "./shared/test-graph/test-graph.component";
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [NgClass, DatePipe, DeviceNamePipe],
+  imports: [NgClass, DatePipe, DeviceNamePipe, TestGraphComponent],
   standalone: true
 })
 export class AppComponent implements OnInit, OnDestroy {
@@ -33,12 +34,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.onConnectedDeviceSub = this.websocketService.onConnectedDevicesMessage().subscribe((devices) => {
-      this.devices = devices;
-    });
+    // this.onConnectedDeviceSub = this.websocketService.onConnectedDevicesMessage().subscribe((devices) => {
+    //   this.devices = devices;
+    // });
 
-    this.onNumberOfClientsSub = this.websocketService.onNumberOfClientsMessage().subscribe((number) => {
-      this.numberOfClients = number;
-    });
+    // this.onNumberOfClientsSub = this.websocketService.onNumberOfClientsMessage().subscribe((number) => {
+    //   this.numberOfClients = number;
+    // });
   }
 }

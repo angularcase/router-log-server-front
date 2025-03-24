@@ -23,5 +23,10 @@ export class BackendService {
   getConnectedDevices(): Observable<Device[]> {
     const url = `${this.apiUrl}/get-connected-devices`;
     return this.httpClient.get<Device[]>(url);
-  }  
+  }
+
+  getArchive(): Observable<Device[]> {
+    const url = `${this.apiUrl}/get-archive`;
+    return this.httpClient.get<Device[]>(url);
+  }
 }

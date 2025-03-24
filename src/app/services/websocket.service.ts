@@ -18,7 +18,7 @@ export class WebsocketService {
 
   onConnectedDevicesMessage(): Observable<any> {
     return new Observable((observer) => {
-      this.socket.on(MessageId.ConnectedDevices, (data) => {
+      this.socket.on(MessageId.ConnectedDevices, (data: any) => {
         console.log(MessageId.ConnectedDevices, data);
         observer.next(data);
       });
@@ -27,7 +27,7 @@ export class WebsocketService {
 
   onNumberOfClientsMessage(): Observable<any> {
     return new Observable((observer) => {
-      this.socket.on(MessageId.NumberOfClients, (data) => {
+      this.socket.on(MessageId.NumberOfClients, (data: any) => {
         console.log(MessageId.ConnectedDevices, data);
         observer.next(data);
       });
