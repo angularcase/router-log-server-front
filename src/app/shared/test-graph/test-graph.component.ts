@@ -7,22 +7,23 @@ import {
   ApexXAxis,
   NgApexchartsModule
 } from "ng-apexcharts";
-import { DeviceNamePipe, MacOwners } from '../../pipes/device-name.pipe';
+import { DeviceNamePipe, MacOwnersNames } from '../../pipes/device-name.pipe';
+import { DeviceColorPipe } from '../../pipes/device-color.pipe';
 
 @Component({
   selector: 'app-test-graph',
   imports: [NgApexchartsModule],
   templateUrl: './test-graph.component.html',
   styleUrl: './test-graph.component.scss',
-  providers: [DeviceNamePipe],
+  providers: [DeviceNamePipe, DeviceColorPipe],
   standalone: true
 })
 export class TestGraphComponent implements OnInit {
 
   public dayFactor = 0;
 
-  from: Date = new Date((new Date()).setHours(8, 0, 0, 0));
-  to: Date = new Date((new Date()).setHours(18, 0, 0, 0));
+  from: Date = new Date((new Date()).setHours(7, 0, 0, 0));
+  to: Date = new Date((new Date()).setHours(20, 0, 0, 0));
 
   public chartOptions: {
     series: ApexAxisChartSeries;
@@ -31,8 +32,10 @@ export class TestGraphComponent implements OnInit {
     xaxis: ApexXAxis;
   };
 
-  constructor(private backendService: BackendService,
-    private deviceNamePipe: DeviceNamePipe
+  constructor(
+    private backendService: BackendService,
+    private deviceNamePipe: DeviceNamePipe,
+    private deviceColorPipe: DeviceColorPipe
   ) {
     this.chartOptions = {
       series: [
@@ -42,7 +45,7 @@ export class TestGraphComponent implements OnInit {
         }
       ],
       chart: {
-        height: 350,
+        height: 200,
         type: "rangeBar",
         toolbar: {
           show: false
@@ -55,7 +58,7 @@ export class TestGraphComponent implements OnInit {
       plotOptions: {
         bar: {
           horizontal: true,
-          distributed: true,
+          // distributed: true,
           barHeight: '70%'
         }
       },
@@ -72,16 +75,13 @@ export class TestGraphComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const from: Date = new Date((new Date()).setHours(8, 0, 0, 0));
-    const to: Date = new Date((new Date()).setHours(20, 0, 0, 0));
-
-    this.backendService.getArchiveNew({from: from, to: to}).subscribe((archiveResults: ArchiveResult[]) => {
-      const chartSeries = this.parseChartData(archiveResults);
+    this.backendService.getArchive({from: this.from, to: this.to}).subscribe((archiveResults: ArchiveResult[]) => {
+      const chartSeries = this.toChartData(archiveResults);
       this.updateChart(chartSeries);
     });
   }
 
-  private parseChartData(archiveResults: ArchiveResult[]) {
+  private toChartData(archiveResults: ArchiveResult[]) {
     const chartSeries: any[] = [];
 
     for (let macArchive of archiveResults) {
@@ -89,7 +89,8 @@ export class TestGraphComponent implements OnInit {
       for (let range of macArchive.ranges) {
         chartSeries.push({
           x: this.deviceNamePipe.transform(macArchive.mac),
-          y: [range.from.getTime(), range.to.getTime()]
+          y: [range.from.getTime(), range.to.getTime()],
+          fillColor: this.deviceColorPipe.transform(macArchive.mac)
         });
       }
 

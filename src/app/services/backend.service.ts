@@ -14,28 +14,23 @@ export class BackendService {
     private httpClient: HttpClient
   ) { }
 
-  getConnectedDevices(): Observable<Device[]> {
-    const url = `${this.apiUrl}/get-connected-devices`;
-    return this.httpClient.get<Device[]>(url);
-  }
+  // getDevicesState(): Observable<Device[]> {
+  //   const url = `${this.apiUrl}/get-devices-state`;
+  //   return this.httpClient.get<Device[]>(url);
+  // }
 
-  getArchive(dto?: GetArchiveDto): Observable<Device[]> {
-    const url = `${this.apiUrl}/get-archive`;
+  getArchiveSummary(dto: GetArchiveSummaryDto): Observable<ArchiveSummaryResult[]> {
+    const url = `${this.apiUrl}/get-archive-summary`;
     let params = new HttpParams();
-  
-    if (dto?.from) {
-      params = params.set('from', dto.from.toISOString());
-    }
-  
-    if (dto?.to) {
-      params = params.set('to', dto.to.toISOString());
-    }
-  
-    return this.httpClient.get<Device[]>(url, { params });
+
+    params = params.set('from', dto.from.toISOString());
+    params = params.set('to', dto.to.toISOString());
+
+    return this.httpClient.get<ArchiveSummaryResult[]>(url, { params });
   }
 
-  getArchiveNew(dto: GetArchiveNewDto): Observable<ArchiveResult[]> {
-    const url = `${this.apiUrl}/get-archive-new`;
+  getArchive(dto: GetArchiveDto): Observable<ArchiveResult[]> {
+    const url = `${this.apiUrl}/get-archive`;
     let params = new HttpParams();
 
     params = params.set('from', dto.from.toISOString());
@@ -53,7 +48,7 @@ export class BackendService {
       )
     );
   }
-  
+
 }
 
 export interface Device {
@@ -63,14 +58,14 @@ export interface Device {
 }
 
 export interface GetArchiveDto {
-  from?: Date;
-  to?: Date;
-}
-
-export interface GetArchiveNewDto {
   from: Date;
   to: Date;
 }
+
+export interface GetArchiveSummaryDto {
+  from: Date;
+  to: Date;
+} 
 
 export interface ArchiveRange {
   from: Date;
@@ -80,4 +75,9 @@ export interface ArchiveRange {
 export interface ArchiveResult {
   mac: string;
   ranges: ArchiveRange[];
+}
+
+export interface ArchiveSummaryResult {
+  mac: string;
+  seconds: number;
 }

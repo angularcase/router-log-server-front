@@ -4,29 +4,28 @@
   </h2>
 
   @if (loaded) {
-    <ul class="list-group">
-      @for (device of devices; track $index) {
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          <div class="me-auto">
-            <div class="fw-bold">{{ device.mac | deviceName }}</div>
-          </div>
-  
-          <span
-            class="badge rounded-pill"
-            [ngClass]="device.state ? 'text-bg-success' : 'text-bg-danger'"
-          >
-            <span>{{ device.state ? 'in' : 'out' }}</span>
-            @if (device.date) {
-              <span class="ms-2">{{ device.date | date: 'HH:mm' }}</span>
-            }
-          </span>
-        </li>
-      }
-    </ul>
+  <ul class="list-group">
+    @for (device of devices; track $index) {
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div class="me-auto">
+        <span class="fw-bold">
+          {{ device.mac | deviceName }} ({{ this.getSummaryByMac(device.mac) | secondsToHoursMinutes }})
+        </span>
+      </div>
+
+      <span class="badge rounded-pill" [ngClass]="device.state ? 'text-bg-success' : 'text-bg-danger'">
+        <span>{{ device.state ? 'in' : 'out' }}</span>
+        @if (device.date) {
+        <span class="ms-2">{{ device.date | date: 'HH:mm' }}</span>
+        }
+      </span>
+    </li>
+    }
+  </ul>
   } @else {
-    <div class="spinner-grow spinner-grow-sm" role="status"></div>
+  <div class="spinner-grow spinner-grow-sm" role="status"></div>
   }
-  
+
   <div>
     <h2 class="mt-5 mb-5">
       <span>Graph</span>
