@@ -34,7 +34,7 @@
     
           <!-- Kolumna 4: Badge z prawej strony -->
           <div class="col text-end">
-            <span class="badge rounded-pill" [ngClass]="device.state ? 'text-bg-success' : 'text-bg-danger'">
+            <span class="badge" [ngClass]="device.state ? 'text-bg-success' : 'text-bg-danger'">
               @if (device.date) {
               <span>{{ device.date | date: 'HH:mm' }}</span>
               }
