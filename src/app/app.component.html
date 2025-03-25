@@ -17,7 +17,7 @@
           <div class="col-auto text-nowrap">
             <div class="badge" [ngClass]="this.getSummaryTodayByMac(device.mac)?.place === 1 ? 'text-bg-warning' : 'text-bg-light'">
               <span class="fw-bold">{{ this.getSummaryTodayByMac(device.mac)?.seconds | secondsToHoursMinutes: 2 }} </span>
-              <span class="small">TODAY</span>
+              <span class="small">TD</span>
             </div>
           </div>
     
@@ -28,7 +28,7 @@
           <div class="col-auto text-nowrap">
             <div class="badge" [ngClass]="this.getSummaryMonthByMac(device.mac)?.place === 1 ? 'text-bg-warning' : 'text-bg-light'">
               <span>{{ this.getSummaryMonthByMac(device.mac)?.seconds| secondsToHoursMinutes: 3 }} </span>
-              <span class="small">MONTH</span>
+              <span class="small">MTH</span>
             </div>
           </div>
     
