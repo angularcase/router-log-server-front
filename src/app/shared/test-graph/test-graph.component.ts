@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BackendService, Device, GetArchiveDto } from '../../services/backend.service';
+import { ArchiveResult, BackendService, Device, GetArchiveDto } from '../../services/backend.service';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -7,13 +7,14 @@ import {
   ApexXAxis,
   NgApexchartsModule
 } from "ng-apexcharts";
-import { MacOwners } from '../../pipes/device-name.pipe';
+import { DeviceNamePipe, MacOwners } from '../../pipes/device-name.pipe';
 
 @Component({
   selector: 'app-test-graph',
   imports: [NgApexchartsModule],
   templateUrl: './test-graph.component.html',
   styleUrl: './test-graph.component.scss',
+  providers: [DeviceNamePipe],
   standalone: true
 })
 export class TestGraphComponent implements OnInit {
@@ -30,7 +31,9 @@ export class TestGraphComponent implements OnInit {
     xaxis: ApexXAxis;
   };
 
-  constructor(private backendService: BackendService) {
+  constructor(private backendService: BackendService,
+    private deviceNamePipe: DeviceNamePipe
+  ) {
     this.chartOptions = {
       series: [
         {
@@ -69,67 +72,30 @@ export class TestGraphComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadChartData();
-  }
+    const from: Date = new Date((new Date()).setHours(8, 0, 0, 0));
+    const to: Date = new Date((new Date()).setHours(20, 0, 0, 0));
 
-  private loadChartData(dayFactor: number = 0): void {
-    const getArchiveDto: GetArchiveDto = {
-      from: this.from,
-      to: this.to,
-    }
-
-    this.backendService.getArchive(getArchiveDto).subscribe((devices: Device[]) => {
-      const whiteMacs = Object.keys(MacOwners);
-      const chartSeries: any[] = [];
-    
-      for (let whiteMac of whiteMacs) {
-        let macDevices = devices
-          .filter(device => device.mac === whiteMac);
-
-        console.log(macDevices);
-
-        macDevices = macDevices
-          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    
-        const whiteMacSeries: any[] = [];
-    
-        let currentStart: Date | null = null;
-    
-        for (let record of macDevices) {
-          const currentDate = new Date(record.date);
-        
-          if (record.state) {
-            // Początek aktywności tylko jeśli nie ma aktualnie otwartego przedziału
-            if (!currentStart) {
-              currentStart = currentDate;
-            }
-          } else {
-            // Koniec aktywności tylko jeśli mamy rozpoczęty przedział
-            if (currentStart) {
-              whiteMacSeries.push({
-                x: (MacOwners as any)[whiteMac],
-                y: [currentStart.getTime(), currentDate.getTime()]
-              });
-              currentStart = null;
-            }
-          }
-        }
-        
-    
-        // Jeśli ostatni status był `true` i nie było końca
-        if (currentStart && macDevices[macDevices.length - 1].state) {
-          whiteMacSeries.push({
-            x: (MacOwners as any)[whiteMac],
-            y: [currentStart.getTime(), new Date().getTime()]
-          });
-        }
-    
-        chartSeries.push(...whiteMacSeries);
-      }
-  
+    this.backendService.getArchiveNew({from: from, to: to}).subscribe((archiveResults: ArchiveResult[]) => {
+      const chartSeries = this.parseChartData(archiveResults);
       this.updateChart(chartSeries);
     });
-  
+  }
+
+  private parseChartData(archiveResults: ArchiveResult[]) {
+    const chartSeries: any[] = [];
+
+    for (let macArchive of archiveResults) {
+
+      for (let range of macArchive.ranges) {
+        chartSeries.push({
+          x: this.deviceNamePipe.transform(macArchive.mac),
+          y: [range.from.getTime(), range.to.getTime()]
+        });
+      }
+
+    }
+
+    return chartSeries;
   }
 
   private updateChart(seriesData: any[]): void {
@@ -148,11 +114,9 @@ export class TestGraphComponent implements OnInit {
 
   public plusFactor() {
     this.dayFactor++;
-    console.log(this.dayFactor);
   }
 
   public minusFactor() {
     this.dayFactor--;
-    console.log(this.dayFactor);
   }
 }
