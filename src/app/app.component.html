@@ -9,14 +9,14 @@
     <li class="list-group-item d-flex justify-content-between align-items-center">
       <div class="me-auto">
         <span class="fw-bold">
-          {{ device.mac | deviceName }} ({{ this.getSummaryByMac(device.mac) | secondsToHoursMinutes }})
+          <span class="me-3">{{ device.mac | deviceName }}</span>
+          <span class="small">{{ this.getSummaryByMac(device.mac) | secondsToHoursMinutes }}</span>
         </span>
       </div>
 
       <span class="badge rounded-pill" [ngClass]="device.state ? 'text-bg-success' : 'text-bg-danger'">
-        <span>{{ device.state ? 'in' : 'out' }}</span>
         @if (device.date) {
-        <span class="ms-2">{{ device.date | date: 'HH:mm' }}</span>
+        <span>{{ device.date | date: 'HH:mm' }}</span>
         }
       </span>
     </li>
@@ -28,7 +28,7 @@
 
   <div>
     <h2 class="mt-5 mb-5">
-      <span>Graph</span>
+      <span>Today's timeline</span>
       <!-- <span>
         <button class="btn btn-secondary ms-5" (click)="plusFactor()"><span class="bi bi-plus-circle-fill"></span></button>
         <button class="btn btn-secondary ms-2" (click)="minusFactor()"><span class="bi bi-dash-circle-fill"></span></button>

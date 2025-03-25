@@ -59,7 +59,7 @@ export class TestGraphComponent implements OnInit {
         bar: {
           horizontal: true,
           // distributed: true,
-          barHeight: '70%'
+          barHeight: '40%'
         }
       },
       xaxis: {
