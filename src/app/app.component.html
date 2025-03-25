@@ -1,6 +1,6 @@
 <div class="container mt-5">
-  <h2 class="mb-5">
-    Office presence ({{ numberOfClients }})
+  <h2 class="mb-4">
+    OFFICE LIVE <span class="small">({{ getLiveQuantity() }})</span>
   </h2>
 
   @if (loaded) {
@@ -10,7 +10,13 @@
       <div class="me-auto">
         <span class="fw-bold">
           <span class="me-3">{{ device.mac | deviceName }}</span>
-          <span class="small">{{ this.getSummaryByMac(device.mac) | secondsToHoursMinutes }}</span>
+          <span class="small">
+            <span>{{ this.getSummaryTodayByMac(device.mac) | secondsToHoursMinutes }}</span>
+            <span class="small"> TODAY</span>
+            <span class="me-2 ms-2">|</span>
+            <span>{{ this.getSummaryMonthByMac(device.mac) | secondsToHoursMinutes }}</span>
+            <span class="small"> MONTH</span>
+          </span>
         </span>
       </div>
 
@@ -27,8 +33,8 @@
   }
 
   <div>
-    <h2 class="mt-5 mb-5">
-      <span>Today's timeline</span>
+    <h2 class="mt-5 mb-4">
+      <span>TODAY</span>
       <!-- <span>
         <button class="btn btn-secondary ms-5" (click)="plusFactor()"><span class="bi bi-plus-circle-fill"></span></button>
         <button class="btn btn-secondary ms-2" (click)="minusFactor()"><span class="bi bi-dash-circle-fill"></span></button>
