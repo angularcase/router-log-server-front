@@ -15,9 +15,9 @@
     
           <!-- Kolumna 2: Dzisiaj -->
           <div class="col-auto text-nowrap">
-            <div class="badge" [ngClass]="this.getSummaryTodayByMac(device.mac)?.place === 1 ? 'text-bg-warning' : 'text-bg-light'">
+            <div class="badge" [ngClass]="getSummaryTodayByMac(device.mac)?.bgClass">
               <span class="fw-bold">{{ this.getSummaryTodayByMac(device.mac)?.seconds | secondsToHoursMinutes: 2 }} </span>
-              <span class="small">TD</span>
+              <span class="small">TDY</span>
             </div>
           </div>
     
@@ -26,7 +26,7 @@
     
           <!-- Kolumna 3: Miesiąc -->
           <div class="col-auto text-nowrap">
-            <div class="badge" [ngClass]="this.getSummaryMonthByMac(device.mac)?.place === 1 ? 'text-bg-warning' : 'text-bg-light'">
+            <div class="badge" [ngClass]="this.getSummaryMonthByMac(device.mac)?.bgClass">
               <span>{{ this.getSummaryMonthByMac(device.mac)?.seconds| secondsToHoursMinutes: 3 }} </span>
               <span class="small">MTH</span>
             </div>

@@ -39,35 +39,21 @@ export class AppComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    const fromToday: Date = new Date((new Date()).setHours(8, 0, 0, 0));
-    const toToday: Date = new Date((new Date()).setHours(20, 0, 0, 0));
-    
-    this.backendService.getArchiveSummary({ from: fromToday, to: toToday }).subscribe((macsSummary: ArchiveSummaryResult[]) => {
-      const sorted = [...macsSummary].sort((a, b) => b.seconds - a.seconds);
-    
-      const wrappedSummary: ArchiveSummaryResultWrapper[] = sorted.map((item, index) => ({
-        ...item,
-        place: index + 1,
-      }));
-    
-      this.macsSummaryToday = wrappedSummary;
+    const today = new Date();
+    const fromToday = new Date(today.setHours(8, 0, 0, 0));
+    const toToday = new Date((new Date()).setHours(20, 0, 0, 0));
+  
+    this.fetchAndWrapSummary(fromToday, toToday, (data: any) => {
+      this.macsSummaryToday = data;
     });
-
+  
     const now = new Date();
     const fromMonth = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
     const toMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-
-    this.backendService.getArchiveSummary({ from: fromMonth, to: toMonth }).subscribe((macsSummary: ArchiveSummaryResult[]) => {
-      const sorted = [...macsSummary].sort((a, b) => b.seconds - a.seconds);
-    
-      const wrappedSummary: ArchiveSummaryResultWrapper[] = sorted.map((item, index) => ({
-        ...item,
-        place: index + 1,
-      }));
-    
-      this.macsSummaryMonth = wrappedSummary;
-    });
-    
+  
+    this.fetchAndWrapSummary(fromMonth, toMonth, (data: any) => {
+      this.macsSummaryMonth = data;
+    }); 
 
     this.onConnectedDeviceSub = this.websocketService.onConnectedDevicesMessage().subscribe((devices) => {
       this.devices = devices;
@@ -75,6 +61,28 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.onNumberOfClientsSub = this.websocketService.onNumberOfClientsMessage().subscribe((number) => {
       this.numberOfClients = number;
+    });
+  }
+
+  private fetchAndWrapSummary(from: Date, to: Date, callback: (data: any) => void): void {
+    this.backendService.getArchiveSummary({ from, to }).subscribe((macsSummary: ArchiveSummaryResult[]) => {
+      const sorted = [...macsSummary].sort((a, b) => b.seconds - a.seconds);
+  
+      const wrappedSummary: ArchiveSummaryResultWrapper[] = sorted.map((item, index) => {
+        const place = index + 1;
+        let bgClass = 'text-bg-light';
+  
+        if (place === 1) bgClass = 'text-bg-warning';
+        if (place === sorted.length) bgClass = 'text-bg-secondary';
+  
+        return {
+          ...item,
+          place,
+          bgClass
+        };
+      });
+  
+      callback(wrappedSummary);
     });
   }
 
@@ -113,4 +121,5 @@ export class AppComponent implements OnInit, OnDestroy {
 
 export interface ArchiveSummaryResultWrapper extends ArchiveSummaryResult {
   place: number;
+  bgClass: string;
 }
