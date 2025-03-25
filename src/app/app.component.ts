@@ -20,9 +20,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public loaded = true;
 
-  public macsSummaryToday: ArchiveSummaryResult[] = [];
+  public macsSummaryToday: ArchiveSummaryResultWrapper[] = [];
 
-  public macsSummaryMonth: ArchiveSummaryResult[] = [];
+  public macsSummaryMonth: ArchiveSummaryResultWrapper[] = [];
 
   @ViewChild(TestGraphComponent) testGraph!: TestGraphComponent;
 
@@ -43,7 +43,14 @@ export class AppComponent implements OnInit, OnDestroy {
     const toToday: Date = new Date((new Date()).setHours(20, 0, 0, 0));
     
     this.backendService.getArchiveSummary({ from: fromToday, to: toToday }).subscribe((macsSummary: ArchiveSummaryResult[]) => {
-      this.macsSummaryToday = macsSummary;
+      const sorted = [...macsSummary].sort((a, b) => b.seconds - a.seconds);
+    
+      const wrappedSummary: ArchiveSummaryResultWrapper[] = sorted.map((item, index) => ({
+        ...item,
+        place: index + 1,
+      }));
+    
+      this.macsSummaryToday = wrappedSummary;
     });
 
     const now = new Date();
@@ -51,8 +58,16 @@ export class AppComponent implements OnInit, OnDestroy {
     const toMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
     this.backendService.getArchiveSummary({ from: fromMonth, to: toMonth }).subscribe((macsSummary: ArchiveSummaryResult[]) => {
-      this.macsSummaryMonth = macsSummary;
+      const sorted = [...macsSummary].sort((a, b) => b.seconds - a.seconds);
+    
+      const wrappedSummary: ArchiveSummaryResultWrapper[] = sorted.map((item, index) => ({
+        ...item,
+        place: index + 1,
+      }));
+    
+      this.macsSummaryMonth = wrappedSummary;
     });
+    
 
     this.onConnectedDeviceSub = this.websocketService.onConnectedDevicesMessage().subscribe((devices) => {
       this.devices = devices;
@@ -69,12 +84,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   getSummaryTodayByMac(mac: string) {
     const macSummary = this.macsSummaryToday.find(macSummary => macSummary.mac === mac);
-    return macSummary ? macSummary.seconds : 0;
+    return macSummary;
   }
 
   getSummaryMonthByMac(mac: string) {
     const macSummary = this.macsSummaryMonth.find(macSummary => macSummary.mac === mac);
-    return macSummary ? macSummary.seconds : 0;
+    return macSummary;
   }
 
   ngOnDestroy(): void {
@@ -94,4 +109,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.testGraph?.minusFactor();
   }
 
+}
+
+export interface ArchiveSummaryResultWrapper extends ArchiveSummaryResult {
+  place: number;
 }

@@ -15,17 +15,21 @@
     
           <!-- Kolumna 2: Dzisiaj -->
           <div class="col-auto small text-nowrap">
-            <span class="fw-bold me-2">{{ this.getSummaryTodayByMac(device.mac) | secondsToHoursMinutes }}</span>
-            <span class="small">TODAY</span>
+            <div class="badge" [ngClass]="this.getSummaryTodayByMac(device.mac)?.place === 1 ? 'text-bg-warning' : 'text-bg-light'">
+              <span class="fw-bold">{{ this.getSummaryTodayByMac(device.mac)?.seconds | secondsToHoursMinutes }} </span>
+              <span class="small">TODAY</span>
+            </div>
           </div>
     
           <!-- Separator -->
           <!-- <div class="col-auto text-muted">|</div> -->
     
           <!-- Kolumna 3: Miesiąc -->
-          <div class="col-auto small text-nowrap">
-            {{ this.getSummaryMonthByMac(device.mac) | secondsToHoursMinutes }}
-            <span class="small">MTH</span>
+          <div class="col-auto text-nowrap">
+            <div class="badge" [ngClass]="this.getSummaryMonthByMac(device.mac)?.place === 1 ? 'text-bg-warning' : 'text-bg-light'">
+              <span>{{ this.getSummaryMonthByMac(device.mac)?.seconds| secondsToHoursMinutes: 3 }} </span>
+              <span class="small">MTH</span>
+            </div>
           </div>
     
           <!-- Kolumna 4: Badge z prawej strony -->
