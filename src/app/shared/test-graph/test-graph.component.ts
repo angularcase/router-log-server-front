@@ -22,8 +22,8 @@ export class TestGraphComponent implements OnInit {
 
   public dayFactor = 0;
 
-  from: Date = new Date((new Date()).setHours(7, 0, 0, 0));
-  to: Date = new Date((new Date()).setHours(20, 0, 0, 0));
+  from: Date = new Date((new Date()).setHours(7, 30, 0, 0));
+  to: Date = new Date((new Date()).setHours(18, 30, 0, 0));
 
   public chartOptions: {
     series: ApexAxisChartSeries;
