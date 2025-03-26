@@ -76,6 +76,7 @@ export class TestGraphComponent implements OnInit {
 
   ngOnInit(): void {
     this.backendService.getArchive({from: this.from, to: this.to}).subscribe((archiveResults: ArchiveResult[]) => {
+      console.log(archiveResults);
       const chartSeries = this.toChartData(archiveResults);
       this.updateChart(chartSeries);
     });
@@ -97,6 +98,10 @@ export class TestGraphComponent implements OnInit {
     }
 
     return chartSeries;
+  }
+
+  public isDataEmpty() {
+    return this.chartOptions.series.length === 0;
   }
 
   private updateChart(seriesData: any[]): void {

@@ -1,6 +1,10 @@
-<apx-chart
-[series]="chartOptions.series"
-[chart]="chartOptions.chart"
-[xaxis]="chartOptions.xaxis"
-[plotOptions]="chartOptions.plotOptions">
-</apx-chart>
+@if (isDataEmpty()) {
+    <apx-chart
+        [series]="chartOptions.series"
+        [chart]="chartOptions.chart"
+        [xaxis]="chartOptions.xaxis"
+        [plotOptions]="chartOptions.plotOptions">
+    </apx-chart>
+} @else {
+    No data to present for today
+}
