@@ -41,7 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const today = new Date();
     const fromToday = new Date(today.setHours(8, 0, 0, 0));
-    const toToday = new Date((new Date()).setHours(20, 0, 0, 0));
+    const toToday = new Date((new Date()).setHours(10, 0, 0, 0));
   
     this.fetchAndWrapSummary(fromToday, toToday, (data: any) => {
       this.macsSummaryToday = data;
