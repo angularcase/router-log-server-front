@@ -5,19 +5,21 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class SecondsToHoursMinutesPipe implements PipeTransform {
   transform(seconds: number | undefined, hoursLeadingZeros: number = 0): string {
-    if (!seconds || seconds < 0) {
-      return '0:00';
+    if (seconds === undefined || seconds < 0) {
+      const formattedHours = hoursLeadingZeros > 0 
+        ? '0'.padStart(hoursLeadingZeros, '0')
+        : '0';
+      return `${formattedHours}:00`;
     }
 
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
 
-    // Formatowanie godzin z wiodącymi zerami
     const formattedHours = hoursLeadingZeros > 0
       ? hours.toString().padStart(hoursLeadingZeros, '0')
       : hours.toString();
 
-    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes.toString();
 
     return `${formattedHours}:${formattedMinutes}`;
   }
