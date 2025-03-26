@@ -101,7 +101,7 @@ export class TestGraphComponent implements OnInit {
   }
 
   public isDataEmpty() {
-    return this.chartOptions.series.length === 0;
+    return this.chartOptions.series[0].data.length === 0;
   }
 
   private updateChart(seriesData: any[]): void {

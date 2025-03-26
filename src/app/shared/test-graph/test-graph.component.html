@@ -1,4 +1,4 @@
-@if (isDataEmpty()) {
+@if (!isDataEmpty()) {
     <apx-chart
         [series]="chartOptions.series"
         [chart]="chartOptions.chart"
