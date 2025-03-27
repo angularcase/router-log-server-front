@@ -9,6 +9,7 @@ import {
 } from "ng-apexcharts";
 import { DeviceNamePipe, MacOwnersNames } from '../../pipes/device-name.pipe';
 import { DeviceColorPipe } from '../../pipes/device-color.pipe';
+import { max } from 'rxjs';
 
 @Component({
   selector: 'app-test-graph',
@@ -86,6 +87,15 @@ export class TestGraphComponent implements OnInit {
     const chartSeries: any[] = [];
 
     for (let macArchive of archiveResults) {
+
+      if (macArchive.ranges.length === 0) {
+        chartSeries.push({
+          x: this.deviceNamePipe.transform(macArchive.mac),
+          y: [null, null],
+          // fillColor: this.deviceColorPipe.transform(macArchive.mac)
+        });
+        continue;
+      }
 
       for (let range of macArchive.ranges) {
         chartSeries.push({
